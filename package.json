@@ -1,0 +1,23 @@
+{
+  "name": "lilo",
+  "version": "1.0.0",
+  "description": "Reverse-engineered LILO Pret a pousser",
+  "main": "lights.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jzarca01/LILO.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jzarca01/LILO/issues"
+  },
+  "homepage": "https://github.com/jzarca01/LILO#readme",
+  "dependencies": {
+    "async": "^2.6.0",
+    "noble-device": "maxnowack/noble-device#patch-1"
+  }
+}

@@ -1,0 +1,65 @@
+#!/usr/bin/env node
+
+const async = require("async");
+const program = require('commander');
+
+function list(val) {
+    return val.split(',').map(String);
+}
+
+program
+    .version('1.0')
+    .option('-l, --light [value]', 'Specify light intensity')
+    .option('-t --time [time]', 'Specify time range', list)
+    .parse(process.argv);
+
+if(!program.time) {
+    program.time = [09,00,23,00];
+}
+
+if(!program.light) {
+    program.light = "03";
+}
+
+const LILO = require('./lib/LILO');
+
+LILO.discover(function (liloInstance) {
+    console.log("LILO Discovered.");
+
+    liloInstance.on('disconnect', function () {
+        console.log('Disconnection.');
+        process.exit(1);
+    });
+
+    async.series([
+        function (callback) {
+            console.log('Connecting...');
+            liloInstance.connectAndSetup(callback);
+        },
+        function (callback) {
+            console.log("Setting light state.")
+            liloInstance.writeLightState(program.light, callback);
+        },
+        function (callback) {
+            console.log("Reading light state.")
+            liloInstance.readLightState(function(error, data) {
+                console.log("Light state : ", data);
+                callback();
+            });
+        },
+        function (callback) {
+            console.log("Setting time state.")
+            liloInstance.writeTimeState(program.time, callback);
+        },
+        function (callback) {
+            console.log("Reading time state.")
+            liloInstance.readTimeState(function(error, data) {
+                console.log("Time state : ", data);
+                callback();
+            });
+        },
+        function (callback) {
+            liloInstance.disconnect(callback);
+        }
+    ]);
+});
